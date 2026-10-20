@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#201d3d" />
+    <title>Sammy the Adventurer</title>
+  </head>
+  <body>
+    <main id="app" aria-label="Sammy the Adventurer game">
+      <div id="game" aria-label="Game world"></div>
+      <section id="hud" aria-live="polite">
+        <button id="journal-button" aria-label="Open journal">✦ Journal</button>
+        <button id="pause-button" aria-label="Pause game">Ⅱ</button>
+        <p id="objective"></p>
+      </section>
+      <div id="touch-controls" aria-label="Movement controls">
+        <button data-move="left" aria-label="Move left">‹</button>
+        <button data-move="right" aria-label="Move right">›</button>
+        <button id="interact-button" aria-label="Interact">Interact</button>
+      </div>
+      <div id="modal-root"></div>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono&family=Playfair+Display:wght@600;700&display=swap');
+
+:root { color: #fff9f1; background: #18152e; font-family: "DM Mono", monospace; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; min-height: 100vh; overflow: hidden; }
+button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+#app { width: 100vw; height: 100dvh; position: relative; overflow: hidden; background: #201d3d; }
+#game, #game canvas { width: 100% !important; height: 100% !important; display: block; }
+#hud { pointer-events: none; position: absolute; inset: 0; padding: max(15px, env(safe-area-inset-top)) 15px 0; }
+#hud button { pointer-events: auto; position: absolute; border: 1px solid #f5d999a6; background: #29234dce; border-radius: 999px; padding: 9px 12px; font-size: 11px; }
+#journal-button { left: 15px; top: max(15px, env(safe-area-inset-top)); }
+#pause-button { right: 15px; top: max(15px, env(safe-area-inset-top)); width: 37px; }
+#objective { position: absolute; left: 50%; transform: translateX(-50%); bottom: 108px; width: min(92vw, 490px); margin: 0; padding: 10px 14px; text-align: center; border-radius: 12px; font-size: 11px; line-height: 1.45; background: #17142ccc; border: 1px solid #fff0c477; text-shadow: 1px 1px #17142c; }
+#touch-controls { position: absolute; display: flex; align-items: end; gap: 8px; left: 18px; right: 18px; bottom: max(16px, env(safe-area-inset-bottom)); pointer-events: none; }
+#touch-controls button { pointer-events: auto; border: 1px solid #fff5ce70; background: #332857df; border-radius: 14px; min-height: 52px; min-width: 52px; font-size: 31px; touch-action: none; }
+#touch-controls #interact-button { margin-left: auto; min-width: 102px; padding: 0 12px; font-size: 12px; background: #9f6272e8; }
+.modal { position: absolute; inset: 0; display: grid; place-items: center; padding: 20px; background: #120e24b8; z-index: 3; }
+.card { width: min(100%, 440px); max-height: 88dvh; overflow: auto; padding: 27px 23px; border: 2px solid #f3d994; border-radius: 19px; color: #2a2142; background: #fff7e9; box-shadow: 0 14px 50px #08061088; text-align: center; }
+.card h1, .card h2 { font-family: "Playfair Display", serif; margin: 0 0 12px; line-height: 1.1; color: #4a326b; }
+.card h1 { font-size: 34px; }.card p { font-size: 13px; line-height: 1.7; }.card button { width: 100%; margin-top: 10px; padding: 12px; border: 0; border-radius: 10px; background: #7852a7; color: white; font-weight: bold; font-size: 12px; }
+.card button.secondary { background: #e8d8c4; color: #4a326b; }.journal-entry { text-align: left; padding: 11px; margin: 10px 0; border-radius: 9px; background: #f4e8d4; font-size: 12px; line-height: 1.5; }
+@media (min-width: 800px) { #app { max-width: 700px; margin: auto; box-shadow: 0 0 60px #0008; } #touch-controls { opacity: .65; } }

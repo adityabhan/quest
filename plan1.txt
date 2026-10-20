@@ -1,0 +1,689 @@
+# Sammy the Adventurer
+## Game Design Document (GDD)
+
+**Version:** 0.10  
+**Status:** Story concept approved; detailed level design in progress  
+**Document purpose:** Maintain the game's design, decisions, and future development plan before implementation.
+
+---
+
+## 1. Project Overview
+
+### 1.1 Concept
+
+*Sammy the Adventurer* is a personal, romantic 2D pixel-art browser game inspired by classic side-scrolling platformers such as Mario.
+
+The player controls Sammy through a series of locations inspired by meaningful shared experiences. She explores environments, jumps across platforms, solves small puzzles, interacts with objects, and collects magical artifacts.
+
+However, the adventure has a deeper purpose: Sammy cannot fully remember where she wants to go or whom she is trying to find.
+
+Each artifact restores a piece of her memory. As the journey progresses, Sammy gradually recognizes that she is searching for someone special.
+
+Eventually, she recovers enough memories to follow the final clue to a castle, where she finds the person she has been looking for: the creator of this game, represented by his own pixel-art character.
+
+The final reward is not treasure or gold. It is a quiet, personal moment in which they find each other and hold hands beneath the moonlight.
+
+### 1.2 Design Pillars
+
+1. **A real game:** Platforming, exploration, interactive objects, puzzles, collectibles, and mini-games must be central to the experience.
+2. **Personal storytelling:** Locations and events should reference genuine shared memories.
+3. **Gradual discovery:** Each artifact reveals something new about Sammy's past and the person she seeks.
+4. **Visual continuity:** Sammy carries her handbag and collected artifacts throughout the adventure.
+5. **Emotional payoff:** The final reunion should feel earned through the entire journey.
+6. **Original identity:** The game can take inspiration from Mario's gameplay without copying its characters, levels, artwork, music, or other distinctive assets.
+
+---
+
+## 2. Core Story
+
+### 2.1 Opening
+
+Sammy begins the game feeling that she has somewhere important to be.
+
+She knows something is missing, but she cannot clearly remember her destination or the person she wants to find.
+
+As she explores, she discovers a mysterious magical artifact. It triggers a brief memory, revealing a familiar place and giving her a clue to the next destination.
+
+She decides to follow these clues.
+
+Initially, the adventure seems like a series of unusual coincidences. Gradually, however, the artifacts reveal that the locations are connected through her own memories.
+
+### 2.2 The Five Artifacts
+
+Five magical artifacts are hidden across five locations:
+
+1. **The First Spark** — Masaldani
+2. **The Guiding Feather** — Bird Sanctuary near the Yamuna bank
+3. **The Heart of Flavor** — Pind Baluchi
+4. **The Lucky Pin** — Bowling
+5. **The Moon Shard** — Machardutam Park
+
+Each artifact has two purposes:
+
+- It serves as a collectible and gameplay reward.
+- It unlocks a memory that guides Sammy toward the next mission.
+
+The artifacts are stored in Sammy's small white handbag. Her journal records each artifact and its associated memory.
+
+### 2.3 Memory-Recovery Principle
+
+Memory recovery must be gradual. Each memory reveals new information instead of repeatedly expressing the same emotion.
+
+The progression is:
+
+- **Artifact 1:** A familiar feeling and a vague recollection.
+- **Artifact 2:** Recognition of a shared experience.
+- **Artifact 3:** A stronger emotional connection and more personal details.
+- **Artifact 4:** Recognition of the person Sammy is searching for becomes almost complete.
+- **Artifact 5:** The final memory returns, and Sammy understands whom she has been trying to find.
+
+The story is a magical memory mystery within the game, not a claim that Sammy has actually lost her real memories.
+
+### 2.4 The Final Destination
+
+A castle serves as the final destination, but its significance is revealed gradually rather than fully explained at the beginning.
+
+When Sammy recovers all five memories, she can follow the final clue to the castle garden.
+
+There, she finds the person she has been searching for.
+
+---
+
+## 3. Characters
+
+### 3.1 Sammy — Main Character
+
+**Appearance**
+- Black hair
+- Brown eyes
+- Small white handbag
+- Outfit: undecided
+
+**Role**
+
+Sammy is the player-controlled protagonist. Her appearance should be recognizable in pixel-art form while remaining practical for a side-scrolling game.
+
+**Planned animations**
+- Idle
+- Walking and running
+- Jumping
+- Falling
+- Landing
+- Interacting with objects
+- Discovering an artifact
+- Putting an artifact into her handbag
+- Reacting to a restored memory
+- Celebrating
+- Reaching out and holding hands
+
+**Character progression**
+
+Sammy begins curious and slightly confused. With each recovered memory, she becomes more certain about where she needs to go and who she is searching for.
+
+### 3.2 The Prince — Player's Character
+
+The prince is the person Sammy eventually finds. Despite the title, he should look like the creator's everyday self rather than a traditional fantasy prince.
+
+**Appearance**
+- Black hair
+- Brown eyes
+- Plain T-shirt
+- Blue jeans
+- Small brown fanny pack worn around the waist
+
+**Role**
+
+He appears at the end of the adventure, waiting in the castle garden.
+
+His design should match Sammy's pixel-art style. His final animation will involve reaching out his hand and holding hers.
+
+The prince's exact earlier presence in the recovered memories is still to be designed.
+
+---
+
+## 4. World and Mission Structure
+
+The game contains five main missions followed by a final reunion sequence.
+
+The order is fixed:
+
+1. Masaldani
+2. Bird Sanctuary near the Yamuna bank
+3. Pind Baluchi
+4. Bowling
+5. Machardutam Park
+
+Each mission should contain:
+- A recognizable environment
+- Side-scrolling movement and exploration
+- A location-specific interaction, obstacle, or challenge
+- A hidden artifact
+- A short memory sequence
+- A clue to the next destination
+- An updated journal and collectible inventory
+
+The missions should feel distinct while sharing the same core controls and interaction system.
+
+---
+
+## 5. Mission 1 — Masaldani
+
+**Artifact:** The First Spark  
+**Memory theme:** The first time Sammy saw someone special  
+**Status:** Core sequence approved; detailed level design pending
+
+Masaldani is the first location where the adventure begins to connect with Sammy's personal memories.
+
+### Step 1: Getting Ready
+
+Sammy starts in her bedroom.
+
+The player learns the basic movement and interaction controls. Sammy gets ready to leave and picks up her small white handbag.
+
+Possible interactions include examining the room and approaching the door. The scene should establish an ordinary day before the magical mystery begins.
+
+### Step 2: Booking a Cab
+
+Sammy uses her phone to book a cab.
+
+A short interaction confirms the booking. She heads outside, waits for the cab, and gets inside.
+
+The journey can be represented through a brief city transition rather than a long driving sequence.
+
+### Step 3: Arriving at Masaldani
+
+The cab drops Sammy at Masaldani restaurant.
+
+She enters the restaurant and explores its warm, welcoming interior. She finds a table and interacts with the menu.
+
+The environment should initially feel ordinary. Magical elements should not dominate before the first artifact appears.
+
+### Step 4: Ordering Yellow Corn Lentil Soup
+
+Sammy orders **yellow corn lentil soup**.
+
+The soup arrives, and she eats it. This should be a small, charming interaction rather than a lengthy food-management mechanic.
+
+The artifact must not appear before she finishes the soup.
+
+### Step 5: Discovering The First Spark
+
+After Sammy finishes her soup, she notices a faint golden glow.
+
+She investigates and discovers The First Spark.
+
+The discovery sequence:
+1. Sammy approaches the glowing object.
+2. She interacts with it and picks it up.
+3. She opens her small white handbag.
+4. She carefully places The First Spark inside.
+5. A gentle golden glow briefly shines from the handbag.
+6. The journal records the first artifact.
+
+The exact spot where the artifact is hidden, its dialogue, and the restaurant's platform layout remain undecided.
+
+### Step 6: First Memory
+
+The First Spark triggers a short, hazy recollection of the first time Sammy saw someone special.
+
+The memory should feel familiar and comforting, but it must not reveal the person's identity completely.
+
+Possible thought:
+
+"Why does this place feel so familiar?"
+
+The memory then provides a clue that leads Sammy to the Bird Sanctuary near the Yamuna bank.
+
+**Mission 1 outcome:** Sammy has collected her first artifact and learned that the mysterious objects can restore fragments of her memory.
+
+---
+
+## 6. Mission 2 — Bird Sanctuary Near the Yamuna Bank
+
+**Artifact:** The Guiding Feather  
+**Memory theme:** Watching birds and the sunset together  
+**Status:** Concept approved; mechanics pending
+
+This mission recalls a real shared experience: watching birds and the sunset together beside the Yamuna.
+
+### Proposed gameplay
+- Explore a riverside environment.
+- Jump between platforms and navigate natural obstacles.
+- Follow birds that guide Sammy toward hidden areas.
+- Complete a small bird- or environment-related puzzle.
+- Discover The Guiding Feather.
+
+### Artifact discovery
+
+Sammy collects The Guiding Feather and stores it in her white handbag.
+
+The bag reacts with a gentle magical glow, and the journal updates.
+
+### Memory unlocked
+
+Sammy recalls watching the birds and sunset with someone.
+
+She begins to understand that these locations are connected to shared experiences rather than random places.
+
+Possible thought:
+
+"I wasn't alone. I came here with someone."
+
+The recovered memory leads her toward Pind Baluchi, the place associated with an exceptional meal.
+
+**Details still to decide:** The precise puzzle, level layout, artifact hiding place, and memory presentation.
+
+---
+
+## 7. Mission 3 — Pind Baluchi
+
+**Artifact:** The Heart of Flavor  
+**Memory theme:** Shared food, laughter, and comfort  
+**Status:** Concept approved; mechanics pending
+
+This mission revisits the memorable meal at Pind Baluchi, where the food was exceptional.
+
+### Proposed gameplay
+- Explore a restaurant-themed environment.
+- Interact with food-related objects or a menu.
+- Complete a small food-themed challenge or puzzle.
+- Discover The Heart of Flavor.
+
+The challenge should be playful and accessible, not a complicated cooking simulator.
+
+### Artifact discovery
+
+Sammy collects The Heart of Flavor and puts it into her handbag.
+
+The inventory now displays three collected artifacts.
+
+### Memory unlocked
+
+Sammy remembers the meal, shared laughter, and the comfort of spending time with someone.
+
+Possible thought:
+
+"I remember how happy I was with him."
+
+This memory makes the connection more personal and leads her to the bowling venue.
+
+**Details still to decide:** Exact puzzle, level layout, interactions, and dialogue.
+
+---
+
+## 8. Mission 4 — Bowling
+
+**Artifact:** The Lucky Pin  
+**Memory theme:** Playing bowling together  
+**Status:** Concept approved; mini-game design pending
+
+This mission turns the shared bowling experience into the most explicitly game-like challenge so far.
+
+### Proposed gameplay
+- Explore a bowling alley.
+- Interact with the bowling lane.
+- Play a simple bowling mini-game using aiming and power controls.
+- Knock down pins to complete the challenge.
+- Discover The Lucky Pin.
+
+The bowling mechanic should be simple enough to work smoothly in a browser and should complement, rather than replace, the side-scrolling gameplay.
+
+### Artifact discovery
+
+Sammy collects The Lucky Pin and places it in her handbag.
+
+### Memory unlocked
+
+Sammy remembers playing bowling with the person she is searching for. Details of his appearance and personality begin to feel familiar.
+
+Possible thought:
+
+"I know who I'm looking for. I just need to remember where he is."
+
+The memory points Sammy toward Machardutam Park.
+
+**Details still to decide:** Bowling controls, scoring, level layout, and exact memory sequence.
+
+---
+
+## 9. Mission 5 — Machardutam Park
+
+**Artifact:** The Moon Shard  
+**Memory theme:** Watching the moon together  
+**Status:** Concept approved; mechanics pending
+
+Machardutam Park is the place where Sammy watched the moon with the person she is searching for. It also carries a humorous shared detail: the mosquitoes.
+
+### Proposed gameplay
+- Explore the park at night.
+- Navigate moonlit platforms and obstacles.
+- Include a few playful mosquito encounters.
+- Use moonlight or environmental clues to locate the final artifact.
+- Discover The Moon Shard.
+
+The mosquito moments should add humor without becoming frustrating or distracting from the story.
+
+### Artifact discovery
+
+Sammy collects The Moon Shard and stores it in her handbag.
+
+All five artifacts are now collected.
+
+### Final memory unlocked
+
+Under the moon, the last missing memory returns.
+
+Sammy remembers the person she has been trying to find and understands why the clues have led her through these locations.
+
+Possible thought:
+
+"Of course. I've been trying to find you."
+
+The memory reveals the final clue to the castle.
+
+**Details still to decide:** Exact nighttime level, artifact puzzle, and the transition to the final destination.
+
+---
+
+## 10. Final Sequence — The Castle Reunion
+
+**Status:** Core emotional outcome approved; exact presentation pending
+
+After recovering all five memories, Sammy follows the final clue to the castle.
+
+The castle garden is quiet and moonlit, with a starry sky and a calm atmosphere.
+
+Sammy enters and finds the prince waiting for her.
+
+### Character reveal
+
+The prince has:
+- Black hair
+- Brown eyes
+- A plain T-shirt
+- Blue jeans
+- A small brown fanny pack around his waist
+
+He should look like the person who inspired the game, rather than a fantasy character in royal clothing.
+
+### Final interaction
+
+1. Sammy recognizes him.
+2. She approaches him.
+3. He reaches out his hand.
+4. She takes his hand.
+5. The two characters hold hands beneath the moonlight.
+
+The five artifacts glow softly together inside Sammy's handbag.
+
+The ending should favor a quiet emotional moment over a large reward screen, elaborate dialogue, or a generic treasure reveal.
+
+### Proposed dialogue
+
+The exact dialogue is not finalized. The ending may be brief, with the characters' expressions, animation, music, and stillness doing most of the emotional work.
+
+The final scene should communicate that the journey was about finding someone important, not collecting objects for their own sake.
+
+---
+
+## 11. Collectibles, Inventory, and Journal
+
+### Handbag
+
+Sammy's small white handbag is a persistent visual feature throughout the game.
+
+Collected artifacts are stored inside it. The handbag can react to each new artifact through a brief glow or animation.
+
+### Artifact inventory
+
+The game should maintain a clear record of collected artifacts:
+
+1. The First Spark
+2. The Guiding Feather
+3. The Heart of Flavor
+4. The Lucky Pin
+5. The Moon Shard
+
+Collected and uncollected artifacts should be visually distinguishable.
+
+### Memory journal
+
+The journal records:
+- The artifact discovered
+- The memory unlocked
+- A short description of what Sammy remembers
+- The clue or destination for the next mission
+
+The journal gives the player a way to revisit the story and understand how the memories connect.
+
+---
+
+## 12. Gameplay and Controls
+
+### Core gameplay
+
+The intended game is a 2D side-scrolling platform adventure with:
+- Walking and running
+- Jumping and falling
+- Platforming and environmental obstacles
+- Object interactions
+- Small puzzles
+- Artifact collection
+- Short story and memory sequences
+- A dedicated bowling mini-game
+
+### Proposed keyboard controls
+
+These are proposals and can be adjusted during design:
+
+- **A / D** or **Left / Right arrows:** Move
+- **Space:** Jump
+- **E** or **Up arrow:** Interact
+- **Escape:** Pause or open the pause menu
+
+Optional touch controls may be considered if mobile browser support is desired.
+
+### Difficulty
+
+The game should be approachable for someone who may not regularly play platformers. Challenges should feel rewarding rather than punishing.
+
+Exact difficulty, checkpoints, lives, and failure behavior remain undecided.
+
+---
+
+## 13. Visual and Audio Direction
+
+### Visual style
+
+- 2D pixel art
+- Side-view character sprites
+- Distinct environments for each mission
+- Warm, recognizable restaurant interiors
+- Riverside sunset colors
+- A lively bowling alley
+- A moonlit park and castle garden
+- Subtle magical effects for artifact discoveries and memories
+
+The game should have an original visual identity while using familiar platformer conventions.
+
+### Character consistency
+
+Sammy's black hair, brown eyes, and white handbag should remain consistent across all missions.
+
+The prince's black hair, brown eyes, T-shirt, blue jeans, and brown fanny pack should remain consistent wherever he appears.
+
+Character sprites must be designed for movement and interaction, not just static portraits.
+
+### Audio
+
+Potential audio elements include:
+- Light background music for exploration
+- Environmental sounds suited to each location
+- A short magical sound when an artifact is discovered
+- A soft transition sound when a memory returns
+- Gentler music during the final reunion
+
+Specific music, sound effects, and whether to use original or licensed assets remain undecided.
+
+---
+
+## 14. Technical Direction — Proposed, Not Finalized
+
+### Possible technology stack
+
+- **JavaScript** for game logic
+- **Phaser 3** as the 2D game framework
+- **Vite** for local development and building
+- **HTML/CSS** for menus and surrounding interface, where useful
+- **GitHub Pages** for static hosting
+
+This is a proposed stack, not a final implementation decision. The technology choice should be confirmed after the detailed design and scope are settled.
+
+### Planned system components
+
+The implementation will likely need:
+- Main game initialization
+- Scene and mission management
+- Player movement and physics
+- Collision detection
+- Interactions and dialogue
+- Artifact collection
+- Inventory and journal
+- Memory and mission progression
+- Save and resume support
+- Audio management
+- User interface and pause menu
+- Final reunion sequence
+
+### Save system
+
+Local browser storage may be used to preserve progress between sessions.
+
+Potential saved information:
+- Completed missions
+- Collected artifacts
+- Unlocked memories
+- Current mission or checkpoint
+
+The precise save behavior remains undecided.
+
+### Hosting
+
+GitHub Pages is the current hosting candidate because the game is intended to be a lightweight browser experience without requiring a custom backend.
+
+---
+
+## 15. Scope and Project Constraints
+
+### Core scope
+
+The planned experience includes:
+- One playable protagonist
+- Five distinct missions
+- Five collectible artifacts
+- Five progressive memory sequences
+- Several small puzzles or interactive challenges
+- One bowling mini-game
+- One final castle sequence
+- A personal hand-holding ending
+
+A target playtime of approximately 15–25 minutes has been suggested, but this is not a confirmed requirement.
+
+### Constraints
+
+- The game should run in a modern browser.
+- Avoid introducing a backend unless a genuine need emerges.
+- Keep the mechanics manageable for a personal project.
+- Prioritize meaningful interactions over unnecessary complexity.
+- Use original or appropriately licensed assets.
+- Keep story, mechanics, art, and technical architecture documented before implementation.
+
+---
+
+## 16. Decisions and Open Questions
+
+### Confirmed decisions
+
+- [x] The project is a playable 2D pixel-art browser game.
+- [x] The gameplay is inspired by classic side-scrolling platformers.
+- [x] Sammy is the main character.
+- [x] Sammy has black hair, brown eyes, and a small white handbag.
+- [x] The prince has black hair, brown eyes, a plain T-shirt, blue jeans, and a small brown fanny pack.
+- [x] There are five missions in a fixed order.
+- [x] Each mission contains a magical artifact.
+- [x] The artifacts are stored in Sammy's handbag.
+- [x] Finding each artifact unlocks a memory that leads to the next mission.
+- [x] Sammy gradually recognizes that she is searching for the player.
+- [x] The five locations are based on meaningful shared experiences.
+- [x] The final destination is a castle garden.
+- [x] The final emotional reward is finding the player and holding his hand.
+- [x] Mission 1 includes getting ready, booking a cab, arriving at Masaldani, ordering yellow corn lentil soup, finishing the soup, and then discovering The First Spark.
+- [x] Planning must continue before code is written.
+
+### Open decisions
+
+- [ ] Sammy's outfit
+- [ ] Exact appearance and design of both characters' pixel-art sprites
+- [ ] Exact level layouts and platform placement
+- [ ] Specific puzzles for the Bird Sanctuary and Pind Baluchi
+- [ ] Bowling mini-game controls and scoring
+- [ ] Exact artifact hiding places
+- [ ] Final dialogue and memory text
+- [ ] How the next-mission clues are presented
+- [ ] How the castle is introduced throughout the story
+- [ ] Difficulty, checkpoints, and failure behavior
+- [ ] Final technical stack
+- [ ] Save and resume behavior
+- [ ] Audio direction and assets
+- [ ] Final game length and scope
+
+---
+
+## 17. Recommended Development Order
+
+The following is the proposed planning and implementation sequence.
+
+### Phase 1 — Complete the design
+1. Finalize the story arc and memory progression.
+2. Design Mission 1 in detail.
+3. Establish a reusable mission structure.
+4. Design Missions 2–5 using the same template.
+5. Finalize character appearance and animations.
+6. Define the interface, inventory, journal, and controls.
+7. Confirm the technology stack.
+
+### Phase 2 — Build a playable foundation
+1. Create the project structure.
+2. Implement the player and movement.
+3. Build a basic side-scrolling environment.
+4. Add collisions, jumping, and interactions.
+5. Test the basic game loop.
+
+### Phase 3 — Build the complete adventure
+1. Implement Mission 1.
+2. Add artifact collection and memory unlocks.
+3. Build the remaining four missions.
+4. Implement the bowling mini-game.
+5. Add the journal, inventory, and save system.
+6. Implement the castle finale.
+
+### Phase 4 — Polish and release
+1. Refine character animations and environments.
+2. Add music and sound effects.
+3. Test controls, mission progression, and browser compatibility.
+4. Fix bugs and improve performance.
+5. Publish the finished game.
+
+---
+
+## 18. Current Project Status
+
+**Current version: 0.10**
+
+The story premise, five locations, artifact sequence, gradual memory-recovery arc, character accessories, and final reunion are established.
+
+Mission 1's required sequence is also established, including the rule that The First Spark is discovered only after Sammy finishes her yellow corn lentil soup and then places the artifact in her white handbag.
+
+The next recommended task is to design Mission 1's actual level layout and interactions in detail, including how the first memory appears and how Sammy discovers the clue to the Bird Sanctuary.
+
+**No code has been written. The project remains in the design and planning phase.**

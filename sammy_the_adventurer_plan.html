@@ -1,0 +1,382 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sammy the Adventurer — Design Plan v0.15</title>
+<style>
+:root {
+  --ink: #29253b;
+  --muted: #68647b;
+  --paper: #fffdf9;
+  --panel: #f5f1ff;
+  --accent: #7658b5;
+  --accent-soft: #e9e0ff;
+  --line: #e6e0ed;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: #f0edf6;
+  color: var(--ink);
+  font: 16px/1.65 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.page { max-width: 960px; margin: auto; padding: 28px 20px 60px; }
+.hero {
+  padding: clamp(28px, 6vw, 58px);
+  border-radius: 24px;
+  background: linear-gradient(135deg, #e8ddff, #fff4df 72%, #f8e9f0);
+  border: 1px solid #e3d8ef;
+}
+.eyebrow {
+  color: var(--accent);
+  font-weight: 750;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  font-size: .76rem;
+}
+h1 { font-size: clamp(2.2rem, 6vw, 4rem); line-height: 1.08; margin: 0; letter-spacing: -.04em; }
+h2 { font-size: clamp(1.45rem, 3vw, 2rem); line-height: 1.2; margin: 0 0 16px; }
+h3 { margin: 0 0 8px; font-size: 1.15rem; }
+p { margin: 8px 0 12px; }
+.subtitle { font-size: 1.12rem; max-width: 680px; color: #4f4964; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.pill { background: #ffffffb8; border: 1px solid #e1d6ee; border-radius: 999px; padding: 5px 11px; font-size: .86rem; }
+nav, .card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px;
+}
+nav { margin: 22px 0 34px; }
+nav strong { display: block; margin-bottom: 8px; }
+nav .links { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+a { color: #6043a0; text-underline-offset: 3px; }
+section { margin: 34px 0; }
+.card { margin: 14px 0; break-inside: avoid; }
+.lead, .small, .location { color: var(--muted); }
+.small, .location { font-size: .92rem; }
+.mission-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+.mission-number {
+  flex: 0 0 46px; height: 46px; display: grid; place-items: center;
+  border-radius: 14px; background: var(--accent-soft);
+  color: var(--accent); font-weight: 800;
+}
+.label { font-weight: 750; color: #50416f; }
+li { margin: 5px 0; }
+.callout, .memory { padding: 14px 16px; border-radius: 9px; margin-top: 14px; }
+.callout { background: var(--panel); border-left: 4px solid var(--accent); }
+.memory { background: #fff8e9; border: 1px solid #f0dfb8; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.grid .card { margin: 0; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: white; }
+table { border-collapse: collapse; width: 100%; min-width: 620px; }
+th, td { padding: 13px 15px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+th { background: #f6f2fc; font-size: .9rem; }
+tr:last-child td { border-bottom: 0; }
+.out-of-scope { columns: 2; }
+.footer { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
+.print-button {
+  position: fixed; right: 18px; bottom: 18px; border: 0; border-radius: 999px;
+  padding: 12px 18px; background: var(--accent); color: white;
+  font: inherit; font-weight: 700; box-shadow: 0 5px 20px #29253b2b; cursor: pointer;
+}
+@media (max-width: 650px) {
+  .page { padding: 14px 12px 40px; }
+  .card, nav { padding: 16px; }
+  .grid { grid-template-columns: 1fr; }
+  .out-of-scope { columns: 1; }
+}
+@media print {
+  body { background: white; font-size: 11pt; }
+  .page { max-width: none; padding: 0; }
+  .print-button { display: none; }
+  section { break-inside: auto; }
+  .hero, .card, nav { break-inside: avoid; }
+  a { color: inherit; }
+}
+</style>
+</head>
+<body>
+<main class="page">
+
+<header class="hero">
+  <p class="eyebrow">Game Design Document · Version 0.15</p>
+  <h1>Sammy the Adventurer</h1>
+  <p class="subtitle">
+    A small, heartfelt pixel-art adventure about recovering memories,
+    revisiting meaningful places, and finding the person Sammy has been searching for.
+  </p>
+  <div class="meta">
+    <span class="pill">2D · 16-bit pixel art</span>
+    <span class="pill">Mobile-friendly browser game</span>
+    <span class="pill">Simple swipe-and-tap controls</span>
+    <span class="pill">Planning only — no code yet</span>
+  </div>
+</header>
+
+<nav>
+  <strong>Contents</strong>
+  <div class="links">
+    <a href="#concept">Core concept</a>
+    <a href="#characters">Characters</a>
+    <a href="#missions">Five missions</a>
+    <a href="#finale">Finale</a>
+    <a href="#artifacts">Artifacts</a>
+    <a href="#gameplay">Gameplay rules</a>
+    <a href="#scope">Out of scope</a>
+    <a href="#todo">What's left</a>
+  </div>
+</nav>
+
+<section id="concept">
+<h2>1. Core Game Concept</h2>
+<div class="card">
+  <p>
+    Sammy cannot remember where she wants to be or whom she is searching for.
+    Magical discoveries restore fragments of memory. Each memory points her
+    toward the next place until she finally remembers the person she has been
+    trying to find.
+  </p>
+  <ul>
+    <li><strong>Genre:</strong> Simple 2D, 16-bit pixel-art adventure.</li>
+    <li><strong>Platform:</strong> Mobile-friendly browser game.</li>
+    <li><strong>Controls:</strong> Swipe to move, tap to interact, and tap to collect.</li>
+    <li><strong>Tone:</strong> Cute, personal, nostalgic, and romantic.</li>
+    <li><strong>Structure:</strong> Five missions followed by a short castle-garden finale.</li>
+    <li><strong>Design principle:</strong> Story first. Gameplay should support the memories, not distract from them.</li>
+  </ul>
+  <div class="callout">
+    <strong>Scope rule:</strong> Keep every mission short and intuitive.
+    Do not add advanced mechanics or extra systems unless explicitly requested.
+  </div>
+</div>
+</section>
+
+<section id="characters">
+<h2>2. Characters</h2>
+<div class="grid">
+  <div class="card">
+    <h3>Sammy</h3>
+    <ul>
+      <li>Black hair and brown eyes.</li>
+      <li>Small white handbag that stores collected artifacts.</li>
+      <li>Casual, cute outfit; exact colors are not finalized.</li>
+      <li>Main playable character.</li>
+      <li>Her handbag glows briefly when an artifact is collected.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Your Character</h3>
+    <ul>
+      <li>Black hair and brown eyes.</li>
+      <li>Plain T-shirt and blue jeans.</li>
+      <li>Small brown fanny pack around the waist.</li>
+      <li>Appears at the final destination: the castle garden.</li>
+    </ul>
+  </div>
+</div>
+<p class="small">
+  Both characters should use the same compact 16-bit pixel-art style and
+  proportions. Keep the designs simple and recognizable.
+</p>
+</section>
+
+<section id="missions">
+<h2>3. Mission Sequence</h2>
+<p class="lead">
+  Every discovery restores a new piece of memory and points Sammy toward the
+  next location. The mission order is fixed.
+</p>
+
+<div class="card">
+  <div class="mission-head">
+    <div class="mission-number">01</div>
+    <div><h3>Mission 1 — The First Spark</h3><p class="location">Location: Masaldani</p></div>
+  </div>
+  <p class="label">Story and gameplay</p>
+  <ol>
+    <li>A short cinematic introduces Sammy in her bedroom.</li>
+    <li>A brief playable interaction lets her get ready and pick up her white handbag.</li>
+    <li>She uses her phone to book a cab and travels to Masaldani.</li>
+    <li>She enters the restaurant and orders <strong>yellow corn lentil soup</strong>.</li>
+    <li>After finishing the soup, she notices a faint golden glow near a decorative plant.</li>
+    <li>She discovers <strong>The First Spark</strong> and places it in her handbag.</li>
+    <li>The artifact triggers a hazy flashback of the first time she saw someone special.</li>
+  </ol>
+  <div class="memory"><strong>Memory clue:</strong> A vague recollection of birds beside a river leads her to the bird sanctuary near the Yamuna bank.</div>
+</div>
+
+<div class="card">
+  <div class="mission-head">
+    <div class="mission-number">02</div>
+    <div><h3>Mission 2 — The Guiding Feather</h3><p class="location">Location: Bird Sanctuary near the Yamuna bank</p></div>
+  </div>
+  <p class="label">Story and gameplay</p>
+  <ol>
+    <li>The memory from The First Spark guides Sammy to the sanctuary.</li>
+    <li>She explores the riverside, surrounded by birds and sunset colors.</li>
+    <li>While roaming around, she finds a <strong>peacock feather</strong> with a faint magical glow.</li>
+    <li>She collects it and places it in her white handbag.</li>
+    <li>The feather triggers a memory of watching birds and the sunset with someone special.</li>
+  </ol>
+  <div class="memory"><strong>Memory clue:</strong> The memory leads her to Pind Baluchi.</div>
+</div>
+
+<div class="card">
+  <div class="mission-head">
+    <div class="mission-number">03</div>
+    <div><h3>Mission 3 — The Heart of Flavor</h3><p class="location">Location: Pind Baluchi</p></div>
+  </div>
+  <p class="label">Story and gameplay</p>
+  <ol>
+    <li>The peacock feather's memory leads Sammy to Pind Baluchi.</li>
+    <li>She enters the restaurant, finds a table, and orders a glass of <strong>chaas (buttermilk)</strong>.</li>
+    <li>The chaas arrives, and she drinks it.</li>
+    <li>Only after she finishes the drink, she notices a glow and discovers a <strong>photograph featuring a Sardar mannequin</strong>.</li>
+    <li>She collects the photograph and puts it in her handbag.</li>
+    <li>The photograph triggers her next memory.</li>
+  </ol>
+  <div class="memory"><strong>Memory clue:</strong> The photograph's memory points Sammy toward the bowling alley. The exact flashback details remain to be finalized.</div>
+</div>
+
+<div class="card">
+  <div class="mission-head">
+    <div class="mission-number">04</div>
+    <div><h3>Mission 4 — The Lucky Pin</h3><p class="location">Location: Bowling alley — venue name TBD</p></div>
+  </div>
+  <p class="label">Story and gameplay</p>
+  <ol>
+    <li>Sammy arrives at the bowling alley after the photograph triggers her memory.</li>
+    <li>She plays a simple bowling interaction.</li>
+    <li>The goal is to <strong>knock down all the pins</strong>.</li>
+    <li>After all the pins are down, she discovers a special glowing bowling pin.</li>
+    <li>She collects <strong>The Lucky Pin</strong> and stores it in her handbag.</li>
+    <li>The artifact triggers a memory of watching the moon with someone special.</li>
+  </ol>
+  <div class="memory"><strong>Memory clue:</strong> The memory of the moon guides her to Machardutam Park.</div>
+</div>
+
+<div class="card">
+  <div class="mission-head">
+    <div class="mission-number">05</div>
+    <div><h3>Mission 5 — The Moon Shard</h3><p class="location">Location: Machardutam Park</p></div>
+  </div>
+  <p class="label">Story and gameplay</p>
+  <ol>
+    <li>The memory from The Lucky Pin leads Sammy to Machardutam Park.</li>
+    <li>She explores the park at night.</li>
+    <li>She avoids mosquitoes in a brief, playful interaction.</li>
+    <li>She finds a clear spot and locates the glowing moon.</li>
+    <li>The moon brings back her final memory: watching it with you.</li>
+    <li>Sammy finally remembers whom she has been searching for.</li>
+    <li>Moonlight reveals a magical trail to her final destination.</li>
+  </ol>
+  <div class="memory"><strong>Mission outcome:</strong> The moon itself leads Sammy onward. No extra artifact mission is needed; the final destination is the castle garden.</div>
+</div>
+</section>
+
+<section id="finale">
+<h2>4. Finale — The Castle Garden</h2>
+<div class="card">
+  <p>The castle garden is the final destination, not another playable mission.</p>
+  <ol>
+    <li>Sammy follows the moonlit trail to the garden.</li>
+    <li>She sees your character waiting beneath the moon.</li>
+    <li>She recognizes him as the person behind her recovered memories.</li>
+    <li>She walks toward him.</li>
+    <li>He reaches out his hand, and she takes it.</li>
+    <li>They hold hands beneath the moon while the collected artifacts glow softly inside her handbag.</li>
+  </ol>
+  <div class="callout"><strong>Emotional payoff:</strong> Sammy wasn't searching for treasure or a reward. She was trying to remember and find you.</div>
+  <p><strong>Still to decide:</strong> Exact dialogue and whether a short final message appears after they hold hands.</p>
+</div>
+</section>
+
+<section id="artifacts">
+<h2>5. Artifact and Memory Progression</h2>
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Mission</th><th>Artifact / discovery</th><th>Memory unlocked</th><th>Next destination</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>The First Spark</td><td>First time seeing someone special</td><td>Bird sanctuary</td></tr>
+    <tr><td>2</td><td>The Guiding Feather — peacock feather</td><td>Watching birds and sunset together</td><td>Pind Baluchi</td></tr>
+    <tr><td>3</td><td>Photograph with a Sardar mannequin</td><td>Exact flashback details TBD</td><td>Bowling alley</td></tr>
+    <tr><td>4</td><td>The Lucky Pin — special bowling pin</td><td>Watching the moon together</td><td>Machardutam Park</td></tr>
+    <tr><td>5</td><td>Locating the moon; “The Moon Shard” is a working title</td><td>Final memory: she remembers you</td><td>Castle garden</td></tr>
+  </tbody>
+</table>
+</div>
+<p class="small">
+  <strong>Naming clarification:</strong> “The Heart of Flavor” and “The Moon Shard”
+  are working names from the earlier plan. Mission 3's actual collectible is the
+  photograph, and Mission 5's key trigger is locating the moon. Decide whether
+  these names are mission titles, artifact names, or both before implementation.
+</p>
+</section>
+
+<section id="gameplay">
+<h2>6. Simple Gameplay Rules</h2>
+<div class="grid">
+  <div class="card">
+    <h3>Swipe to move</h3>
+    <p>Sammy moves through the scene using simple touch gestures. Movement should be predictable and forgiving.</p>
+  </div>
+  <div class="card">
+    <h3>Tap to interact</h3>
+    <p>Tap relevant objects such as the phone, menu, drink, or bowling interaction.</p>
+  </div>
+  <div class="card">
+    <h3>Tap to collect</h3>
+    <p>Important artifacts glow softly. Tapping collects one and triggers a short memory scene.</p>
+  </div>
+  <div class="card">
+    <h3>Short memory scenes</h3>
+    <p>Each flashback reveals one new piece of the story. Avoid long dialogue and complicated cutscenes.</p>
+  </div>
+</div>
+</section>
+
+<section id="scope">
+<h2>7. Explicitly Out of Scope</h2>
+<div class="card">
+  <ul class="out-of-scope">
+    <li>Complex platforming or jumping physics.</li>
+    <li>Enemies, combat, health bars, or lives.</li>
+    <li>Complicated puzzles or inventory management.</li>
+    <li>Skill trees, upgrades, or elaborate quests.</li>
+    <li>Multiplayer or backend services.</li>
+    <li>Extra missions beyond the five locations and finale.</li>
+    <li>Complex bowling or mosquito mechanics.</li>
+  </ul>
+  <p>Bowling and mosquito avoidance are the only small challenge-like moments, and both should stay easy.</p>
+</div>
+</section>
+
+<section id="todo">
+<h2>8. What Remains Before Implementation</h2>
+<div class="card">
+  <ol>
+    <li><strong>Finalize memory transitions:</strong> Decide the exact flashback caused by the Mission 3 photograph and the Mission 4 bowling pin.</li>
+    <li><strong>Settle artifact naming:</strong> Confirm whether “The Heart of Flavor” and “The Moon Shard” are collectible names, mission names, or both.</li>
+    <li><strong>Finalize the ending:</strong> Decide the dialogue, recognition moment, and any final-screen message.</li>
+    <li><strong>Finish visual details:</strong> Confirm Sammy's outfit colors and the consistent pixel-art look.</li>
+    <li><strong>Choose implementation approach:</strong> Keep it lightweight and browser-based; finalize technology only when ready to build.</li>
+    <li><strong>Use this document as the reference:</strong> Do not start coding until explicitly requested.</li>
+  </ol>
+</div>
+</section>
+
+<footer class="footer">
+  <p><strong>Sammy the Adventurer · Design Plan v0.15</strong></p>
+  <p>This document records the current direction. Items marked TBD are intentionally open rather than assumed to be finalized.</p>
+</footer>
+
+</main>
+<button class="print-button" onclick="window.print()">Print / Save as PDF</button>
+</body>
+</html>

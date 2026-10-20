@@ -104,7 +104,7 @@ class AdventureScene extends Phaser.Scene {
     avatar.add(portrait);
     this.tweens.add({ targets: avatar, y: y - 2, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
   }
-  drawWorld() { const s = this.controller.getState(); const savedPlayerX = Math.min(this.player?.x ?? 76, this.scale.width - 40); const playerX = s.step === 'adventure-complete' ? 160 : savedPlayerX; this.stopMosquitoBuzz(); this.stopBirdsong(); if (s.step !== 'adventure-complete') { this.stopFinaleSong(); this.dedicationShown = false; } this.mosquitoSwarm = []; this.children.removeAll(); this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x2a234d).setOrigin(0); const step = s.step;
+  drawWorld() { const s = this.controller.getState(); const savedPlayerX = Math.min(this.player?.x ?? 76, this.scale.width - 40); const playerX = s.step === 'adventure-complete' ? 160 : savedPlayerX; this.stopMosquitoBuzz(); this.stopBirdsong(); if (s.step !== 'adventure-complete') { this.stopFinaleSong(); this.dedicationShown = false; document.querySelector('#final-dedication')?.remove(); } this.mosquitoSwarm = []; this.children.removeAll(); this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x2a234d).setOrigin(0); const step = s.step;
     if (s.missionId === 'mission-5') { if (step === 'park-arrival') this.drawPark('mosquitoes'); else if (step === 'mosquitoes-cleared') this.drawPark('moon'); else if (step === 'moon-found') this.drawFinalMemory(); else if (step === 'castle-garden') this.drawCastle(); else if (step === 'adventure-complete') this.drawEnd(); else this.drawPark('mosquitoes'); }
     else if (s.missionId === 'mission-4') { if (step === 'bowling-arrival') this.drawBowling('door'); else if (step === 'bowling-roll-1' || step === 'bowling-roll-2') this.drawBowling('roll'); else if (step === 'pin-collected') this.drawBowling('pin'); else if (step === 'bowling-memory') this.drawBowlingMemory(); else this.drawFinal(); }
     else if (s.missionId === 'mission-3') { if (step === 'pind-arrival') this.drawPind('door'); else if (step === 'pind-table') this.drawPind('chaas'); else if (step === 'chaas-finished') this.drawPind('photo'); else if (step === 'photo-collected') this.drawPindMemory(); else this.drawFinal(); }
@@ -319,7 +319,7 @@ class AdventureScene extends Phaser.Scene {
     if (!this.cache.audio.exists('finaleSong') || this.finaleSong?.isPlaying) return;
     this.finaleSong = this.sound.add('finaleSong', { volume: .28 });
     const revealDedication = () => this.showFinalDedication();
-    this.time.delayedCall(60_000, revealDedication);
+    window.setTimeout(revealDedication, 60_000);
     this.finaleSong.once('complete', revealDedication);
     this.finaleSong.once('play', () => {
       this.finaleSongStarted = true;
@@ -332,10 +332,10 @@ class AdventureScene extends Phaser.Scene {
   private showFinalDedication() {
     if (this.dedicationShown || this.controller.getState().step !== 'adventure-complete') return;
     this.dedicationShown = true;
-    const veil = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x0d0b1d, 0).setOrigin(0).setDepth(20);
-    const message = this.add.text(this.scale.width / 2, this.scale.height / 2, 'Made with love\nfor my Madno.', { align: 'center', fontFamily: 'Playfair Display', fontSize: '28px', color: '#fff4d4', lineSpacing: 12 }).setOrigin(.5).setAlpha(0).setDepth(21);
-    this.tweens.add({ targets: veil, alpha: .92, duration: 1300, ease: 'Sine.easeInOut' });
-    this.tweens.add({ targets: message, alpha: 1, duration: 1000, delay: 450, ease: 'Sine.easeInOut' });
+    const dedication = document.createElement('div');
+    dedication.id = 'final-dedication';
+    dedication.innerHTML = '<p>Made with love<br>for my Madno!❤️</p>';
+    document.querySelector('#app')?.append(dedication);
   }
   private drawEnd() { this.base('Sammy the Adventurer', 0x312650); this.add.circle(285, 130, 44, 0xfff3bd); this.add.circle(285, 130, 64, 0xfff3bd, .08); for (const [x, y, delay] of [[46, 145, 0], [92, 190, 180], [166, 126, 340], [337, 194, 520], [355, 112, 700], [58, 260, 860]] as const) { const star = this.add.text(x, y, '✦', { fontSize: '13px', color: '#fff3b8' }); this.tweens.add({ targets: star, alpha: .22, scale: 1.45, duration: 720, delay, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' }); } this.add.rectangle(0, 480, this.scale.width, 65, 0x29484c).setOrigin(0); for (const x of [25, 55, 335, 365]) { this.add.circle(x, 467, 20, 0x386759); this.add.text(x - 7, 452, '✿', { fontSize: '17px', color: '#ed9cae' }); } this.drawAdityaAvatar(222, 495); this.add.text(this.scale.width / 2, 268, 'Some journeys lead to a place.\nThis one led Sammy back to \nAditya.', { align: 'center', fontFamily: 'Playfair Display', fontSize: '23px', color: '#fff7d9', lineSpacing: 11 }).setOrigin(.5); this.add.text(this.scale.width / 2, 375, '♥  Together beneath the moon.  ♥', { align: 'center', fontSize: '12px', color: '#f6c8b0' }).setOrigin(.5); this.target = undefined; }
   private drawFinal() { const id = this.controller.getState().missionId; const m2 = id === 'mission-2'; const m3 = id === 'mission-3'; const m4 = id === 'mission-4';

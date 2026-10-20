@@ -8,6 +8,10 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 #app, #app * { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 #game, #game canvas { width: 100% !important; height: 100% !important; display: block; }
 #game canvas { touch-action: none; }
+#final-dedication { position: absolute; inset: 0; z-index: 10; display: grid; place-items: center; background: rgb(13 11 29 / 92%); animation: dedication-dim 1.3s ease-in-out both; }
+#final-dedication p { margin: 0; color: #fff4d4; font-family: "Playfair Display", serif; font-size: clamp(28px, 8vw, 46px); line-height: 1.35; text-align: center; animation: dedication-text 1s .45s ease-in-out both; }
+@keyframes dedication-dim { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dedication-text { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 #hud { pointer-events: none; position: absolute; inset: 0; padding: max(15px, env(safe-area-inset-top)) 15px 0; }
 #hud button { pointer-events: auto; position: absolute; border: 1px solid #f5d999a6; background: #29234dce; border-radius: 999px; padding: 9px 12px; font-size: 11px; }
 #journal-button { left: 15px; top: max(15px, env(safe-area-inset-top)); }

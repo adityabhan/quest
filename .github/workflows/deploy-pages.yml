@@ -32,6 +32,8 @@ jobs:
         run: npm ci
       - name: Build site
         run: npm run build
+        env:
+          VITE_STRICT_INTERACTIONS: true
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload site artifact

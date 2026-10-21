@@ -5,6 +5,7 @@ import pindLogoUrl from '../assets/pind-balluchi.png';
 import mosquitoSoundUrl from '../assets/Mosquito Sound Effect.mp3';
 import birdsSoundUrl from '../assets/birds.mp3';
 import finaleSongUrl from '../assets/jab-we-met-cut.mp3';
+import taxiSoundUrl from '../assets/taxi-sound-effect.mp3';
 import { objectives, interactions } from './content';
 import { freshProgress, loadProgress, resetProgress, saveProgress, type MissionState, type Step } from './progress';
 
@@ -51,7 +52,7 @@ class AdventureScene extends Phaser.Scene {
   private readonly interactionRange = 50;
   private controller!: GameController; private player!: Phaser.GameObjects.Container; private target?: Point; private move = 0; private cursors!: Phaser.Types.Input.Keyboard.CursorKeys; private keys!: { A: Phaser.Input.Keyboard.Key; D: Phaser.Input.Keyboard.Key; E: Phaser.Input.Keyboard.Key; ENTER: Phaser.Input.Keyboard.Key }; private bowlingPins: Phaser.GameObjects.Container[] = []; private bowlingBall?: Phaser.GameObjects.Arc; private rolling = false; private mosquitoBuzz?: Phaser.Sound.BaseSound; private birdsAmbience?: Phaser.Sound.BaseSound; private finaleSong?: Phaser.Sound.BaseSound; private finaleSongStarted = false; private dedicationShown = false; private mosquitoSwarm: Phaser.GameObjects.Text[] = [];
   constructor() { super('adventure'); }
-  preload() { this.load.image('sammyAvatarSource', sammyAvatarUrl); this.load.image('adityaAvatar', adityaAvatarUrl); this.load.image('pindLogo', pindLogoUrl); this.load.audio('mosquitoBuzz', mosquitoSoundUrl); this.load.audio('birdsAmbience', birdsSoundUrl); this.load.audio('finaleSong', finaleSongUrl); }
+  preload() { this.load.image('sammyAvatarSource', sammyAvatarUrl); this.load.image('adityaAvatar', adityaAvatarUrl); this.load.image('pindLogo', pindLogoUrl); this.load.audio('mosquitoBuzz', mosquitoSoundUrl); this.load.audio('birdsAmbience', birdsSoundUrl); this.load.audio('finaleSong', finaleSongUrl); this.load.audio('taxiSound', taxiSoundUrl); }
   create() {
     this.controller = (window as unknown as { controller?: GameController }).controller!;
     if (!this.controller) { const controller = new GameController(); (window as unknown as { controller: GameController }).controller = controller; this.controller = controller; }
@@ -346,7 +347,7 @@ class AdventureScene extends Phaser.Scene {
     switch (t.id) {
       case 'handbag': act('bag-picked', { hasHandbag: true }); break;
       case 'phone': act('cab-booked'); break;
-      case 'cab': act('restaurant', {}, () => this.controller.showMessage('Masaldani', 'The cab arrives at a restaurant wrapped in warm evening light.')); break;
+      case 'cab': this.sound.play('taxiSound', { volume: .45 }); act('restaurant', {}, () => this.controller.showMessage('Masaldani', 'The cab arrives at a restaurant wrapped in warm evening light.')); break;
       case 'door': act('menu-opened'); break;
       case 'menu': act('soup-ordered', { soupStatus: 'ordered' }); break;
       case 'soup': act('soup-finished', { soupStatus: 'finished' }); break;

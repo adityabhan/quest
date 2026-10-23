@@ -35,12 +35,12 @@ export class GameController {
   getState() { return this.state; }
   isStrictInteractionMode() { return this.strictInteractions; }
   setInteractionAvailable(available: boolean) { if (!this.strictInteractions) { this.interactButton.disabled = false; this.interactButton.classList.remove('unavailable'); return; } this.interactButton.disabled = !available; this.interactButton.classList.toggle('unavailable', !available); }
-  advance(step: Step, change: Partial<MissionState> = {}) { this.state = { ...this.state, ...change, step }; saveProgress(this.state); this.refresh(); this.scene.drawWorld(); }
+  advance(step: Step, change: Partial<MissionState> = {}) { this.state = { ...this.state, ...change, step }; saveProgress(this.state); this.refresh(); this.scene.transitionToWorld(); }
   refresh() { this.objective.textContent = objectives[this.state.step]; }
   showMessage(title: string, text: string, next?: () => void) { this.modal.innerHTML = `<div class="modal"><article class="card"><h2>${title}</h2><p>${text}</p><button id="continue">Continue</button></article></div>`; this.modal.querySelector('#continue')?.addEventListener('click', () => { this.modal.innerHTML = ''; next?.(); }); }
   openTitle(resume = false) {
     const label = resume ? 'Resume adventure' : 'Begin adventure';
-    this.modal.innerHTML = `<div class="modal"><article class="card"><p>MISSION 1 · THE FIRST SPARK</p><h1>Sammy the Adventurer</h1><p>A small journey through a familiar place—and a memory waiting to return.</p><button id="start">${label}</button>${resume ? '<button class="secondary" id="restart">Start over</button>' : ''}<p>Move with the buttons below. When an object glows, walk close and tap <b>Interact</b>.</p></article></div>`;
+    this.modal.innerHTML = `<div class="modal"><article class="card"><p>MISSION 1 · THE FIRST SPARK</p><h1>Sammy the Adventurer</h1><p>A small journey through a familiar place—and a memory waiting to return.</p><button id="start">${label}</button>${resume ? '<button class="secondary" id="restart">Start over</button>' : ''}<p>Move with the buttons below. When an object glows, walk close and tap <b>Interact</b>.</p><p class="game-version">v0.1.0</p></article></div>`;
     this.modal.querySelector('#start')?.addEventListener('click', () => { this.modal.innerHTML = ''; this.scene.drawWorld(); });
     this.modal.querySelector('#restart')?.addEventListener('click', () => { resetProgress(); this.state = freshProgress(); saveProgress(this.state); this.refresh(); this.modal.innerHTML = ''; this.scene.drawWorld(); });
   }
@@ -50,7 +50,7 @@ export class GameController {
 
 class AdventureScene extends Phaser.Scene {
   private readonly interactionRange = 50;
-  private controller!: GameController; private player!: Phaser.GameObjects.Container; private target?: Point; private move = 0; private cursors!: Phaser.Types.Input.Keyboard.CursorKeys; private keys!: { A: Phaser.Input.Keyboard.Key; D: Phaser.Input.Keyboard.Key; E: Phaser.Input.Keyboard.Key; ENTER: Phaser.Input.Keyboard.Key }; private bowlingPins: Phaser.GameObjects.Container[] = []; private bowlingBall?: Phaser.GameObjects.Arc; private rolling = false; private mosquitoBuzz?: Phaser.Sound.BaseSound; private birdsAmbience?: Phaser.Sound.BaseSound; private finaleSong?: Phaser.Sound.BaseSound; private finaleSongStarted = false; private dedicationShown = false; private mosquitoSwarm: Phaser.GameObjects.Text[] = [];
+  private controller!: GameController; private player!: Phaser.GameObjects.Container; private target?: Point; private move = 0; private transitioning = false; private cursors!: Phaser.Types.Input.Keyboard.CursorKeys; private keys!: { A: Phaser.Input.Keyboard.Key; D: Phaser.Input.Keyboard.Key; E: Phaser.Input.Keyboard.Key; ENTER: Phaser.Input.Keyboard.Key }; private bowlingPins: Phaser.GameObjects.Container[] = []; private bowlingBall?: Phaser.GameObjects.Arc; private rolling = false; private mosquitoBuzz?: Phaser.Sound.BaseSound; private birdsAmbience?: Phaser.Sound.BaseSound; private finaleSong?: Phaser.Sound.BaseSound; private finaleSongStarted = false; private dedicationShown = false; private mosquitoSwarm: Phaser.GameObjects.Text[] = [];
   constructor() { super('adventure'); }
   preload() { this.load.image('sammyAvatarSource', sammyAvatarUrl); this.load.image('adityaAvatar', adityaAvatarUrl); this.load.image('pindLogo', pindLogoUrl); this.load.audio('mosquitoBuzz', mosquitoSoundUrl); this.load.audio('birdsAmbience', birdsSoundUrl); this.load.audio('finaleSong', finaleSongUrl); this.load.audio('taxiSound', taxiSoundUrl); }
   create() {
@@ -60,6 +60,19 @@ class AdventureScene extends Phaser.Scene {
     this.player = this.add.container(76, 510); this.drawSammy(); this.input.on('pointerdown', () => this.interact()); this.controller.attach(this);
   }
   setMove(direction: number) { this.move = direction; }
+  transitionToWorld() {
+    if (this.transitioning) return;
+    this.transitioning = true;
+    const camera = this.cameras.main;
+    camera.fadeOut(180, 27, 22, 42);
+    camera.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+      this.drawWorld();
+      camera.setZoom(.985);
+      camera.fadeIn(260, 27, 22, 42);
+      this.tweens.add({ targets: camera, zoom: 1, duration: 420, ease: 'Sine.easeOut' });
+      camera.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE, () => { this.transitioning = false; });
+    });
+  }
   update() { const keyboardMove = (this.cursors.left.isDown || this.keys.A.isDown) ? -1 : (this.cursors.right.isDown || this.keys.D.isDown) ? 1 : 0; const isEnding = this.controller.getState().step === 'adventure-complete'; const direction = isEnding ? 0 : keyboardMove || this.move; this.player.x = Phaser.Math.Clamp(this.player.x + direction * 2.3, 40, this.scale.width - 40); this.player.setScale(direction < 0 ? -1.04 : 1.04, 1.04); if (isEnding && this.finaleSongStarted && this.finaleSong && !this.finaleSong.isPlaying) this.showFinalDedication(); this.controller.setInteractionAvailable(this.inInteractionRange()); if (Phaser.Input.Keyboard.JustDown(this.keys.E) || Phaser.Input.Keyboard.JustDown(this.keys.ENTER) || Phaser.Input.Keyboard.JustDown(this.cursors.up)) this.interact(); }
   private makeSammySprite() {
     if (this.textures.exists('sammyAvatar')) return;
@@ -114,6 +127,31 @@ class AdventureScene extends Phaser.Scene {
     this.player = this.add.container(playerX, 510); this.drawSammy(); if (step === 'adventure-complete') this.startFinaleSong(); this.controller.setInteractionAvailable(this.inInteractionRange());
   }
   private base(title: string, sky: number) { this.add.rectangle(0, 0, this.scale.width, this.scale.height, sky).setOrigin(0); this.add.text(20, 65, title, { fontFamily: 'Playfair Display', fontSize: '21px', color: '#fff2cc' }); this.add.rectangle(0, 545, this.scale.width, 155, 0x402e48).setOrigin(0); }
+  private addDriftingClouds(y: number, color = 0xf8fbf1) {
+    for (const [x, width, delay] of [[-44, 82, 0], [155, 58, 850], [315, 94, 1500]] as const) {
+      const cloud = this.add.container(x, y + (x % 3) * 11);
+      cloud.add(this.add.ellipse(0, 0, width, 18, color, .68)); cloud.add(this.add.ellipse(width * .18, -8, width * .45, 20, color, .68)); cloud.add(this.add.ellipse(-width * .2, -5, width * .4, 16, color, .68));
+      this.tweens.add({ targets: cloud, x: x + 54, duration: 6800, delay, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    }
+  }
+  private addWaterRipples(top: number, color = 0xdba27f) {
+    for (const [x, y, width, delay] of [[82, top + 24, 40, 0], [250, top + 43, 62, 340], [156, top + 82, 54, 680], [312, top + 104, 35, 950]] as const) {
+      const ripple = this.add.ellipse(x, y, width, 3, color, .48);
+      this.tweens.add({ targets: ripple, scaleX: 1.7, alpha: .08, duration: 1500, delay, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    }
+  }
+  private addSteam(x: number, y: number) {
+    for (const [offset, delay] of [[-8, 0], [0, 380], [9, 760]] as const) {
+      const wisp = this.add.text(x + offset, y, '⌁', { fontSize: '18px', color: '#fff2d1' }).setAlpha(.48);
+      this.tweens.add({ targets: wisp, y: y - 28, x: x + offset + 6, alpha: .05, duration: 1300, delay, repeat: -1, ease: 'Sine.easeOut' });
+    }
+  }
+  private addFallingLeaves() {
+    for (const [x, y, delay] of [[62, 230, 0], [146, 178, 600], [304, 228, 1150], [352, 170, 1700]] as const) {
+      const leaf = this.add.text(x, y, '•', { fontSize: '18px', color: '#e7bb74' }).setAlpha(.75);
+      this.tweens.add({ targets: leaf, x: x + 18, y: y + 62, angle: 140, alpha: .12, duration: 2600, delay, repeat: -1, ease: 'Sine.easeInOut' });
+    }
+  }
   private glow(x: number, y: number, label: string, id: string) {
     const circle = this.add.circle(x, y, 19, 0xffdf72, .18).setInteractive({ useHandCursor: true });
     this.tweens.add({ targets: circle, scale: 1.55, alpha: .7, duration: 700, yoyo: true, repeat: -1 });
@@ -164,7 +202,7 @@ class AdventureScene extends Phaser.Scene {
     else if (step === 'bag-picked') { this.add.rectangle(286, 477, 22, 17, 0x2b2a45).setOrigin(0).setStrokeStyle(2, 0xf0cc9d); this.add.rectangle(290, 480, 14, 2, 0xb7d8dc).setOrigin(0); this.glow(298, 500, 'phone', 'phone'); }
   }
   private drawCabRide() {
-    this.base('Outside Sammy’s Home · 1 PM', 0x8fd0e7); this.add.rectangle(0, 105, this.scale.width, 230, 0xa9dbee).setOrigin(0); this.add.circle(329, 151, 32, 0xffe49a); this.add.circle(329, 151, 44, 0xffe49a, .14); this.add.ellipse(80, 157, 72, 18, 0xf6fcf3, .85); this.add.ellipse(126, 165, 48, 14, 0xf6fcf3, .8);
+    this.base('Outside Sammy’s Home · 1 PM', 0x8fd0e7); this.add.rectangle(0, 105, this.scale.width, 230, 0xa9dbee).setOrigin(0); this.add.circle(329, 151, 32, 0xffe49a); this.add.circle(329, 151, 44, 0xffe49a, .14); this.addDriftingClouds(164); 
     this.add.rectangle(0, 335, this.scale.width, 120, 0x8f8b87).setOrigin(0); this.add.rectangle(0, 455, this.scale.width, 90, 0x3c4555).setOrigin(0); for (let x = 20; x < this.scale.width; x += 70) this.add.rectangle(x, 493, 42, 5, 0xf6e0a2).setOrigin(0);
     this.add.rectangle(22, 226, 111, 180, 0xd8b18d).setOrigin(0).setStrokeStyle(3, 0x806b69); this.add.rectangle(37, 257, 43, 51, 0x94c7d7).setOrigin(0).setStrokeStyle(3, 0x655b69); this.add.rectangle(88, 258, 29, 148, 0x744d54).setOrigin(0); this.add.triangle(15, 228, 140, 228, 78, 181, 0xb9675a).setOrigin(0);
     this.add.circle(365, 338, 35, 0x4c8a65); this.add.circle(342, 354, 31, 0x5b9d70); this.add.rectangle(352, 353, 13, 91, 0x5d4a42).setOrigin(0); this.add.text(151, 274, 'Your cab is here!', { fontFamily: 'Playfair Display', fontSize: '20px', color: '#4d596e' });
@@ -174,7 +212,7 @@ class AdventureScene extends Phaser.Scene {
   private drawRestaurant(id: 'door' | 'menu' | 'soup' | 'spark', interactive = true) {
     if (id === 'door') {
       this.base('Masaldani', 0x8fcde0);
-      this.add.circle(332, 143, 31, 0xffe39a); this.add.circle(332, 143, 43, 0xffe39a, .15); this.add.ellipse(73, 144, 62, 17, 0xf4fbf0, .82); this.add.ellipse(112, 151, 48, 14, 0xf4fbf0, .78);
+      this.add.circle(332, 143, 31, 0xffe39a); this.add.circle(332, 143, 43, 0xffe39a, .15); this.addDriftingClouds(152);
       this.add.rectangle(0, 190, this.scale.width, 215, 0xbf8060).setOrigin(0); // sunlit façade
       this.add.rectangle(0, 365, this.scale.width, 180, 0xb2a49b).setOrigin(0); // pavement
       for (let x = 0; x < this.scale.width; x += 44) this.add.rectangle(x, 455, 32, 3, 0x91847e).setOrigin(0);
@@ -200,6 +238,7 @@ class AdventureScene extends Phaser.Scene {
     this.add.rectangle(17, 235, 74, 84, 0x674351).setOrigin(0).setStrokeStyle(3, 0xf0c97f); this.add.text(54, 250, 'home\nflavour', { align: 'center', fontFamily: 'Playfair Display', fontSize: '16px', color: '#ffe4a6', lineSpacing: 5 }).setOrigin(.5, 0);
     // Table, place settings and chairs form the playable focus.
     this.add.ellipse(260, 394, 145, 32, 0x6c3c2e); this.add.rectangle(194, 394, 132, 16, 0x7d4730).setOrigin(0); this.add.rectangle(212, 409, 13, 88, 0x61382e).setOrigin(0); this.add.rectangle(297, 409, 13, 88, 0x61382e).setOrigin(0);
+    this.addSteam(263, 358);
     this.add.rectangle(200, 424, 38, 56, 0x79465a).setOrigin(0); this.add.rectangle(287, 424, 38, 56, 0x79465a).setOrigin(0); this.add.ellipse(263, 383, 48, 13, 0xffead0).setStrokeStyle(2, 0xd6a76c);
     this.add.rectangle(242, 364, 7, 20, 0xf3d7a0).setOrigin(0); this.add.rectangle(277, 364, 7, 20, 0xf3d7a0).setOrigin(0);
     // The decorative plant is the artifact's eventual hiding place.
@@ -208,7 +247,7 @@ class AdventureScene extends Phaser.Scene {
     if (id === 'soup') { this.add.circle(263, 379, 27, 0xf4e6cc).setStrokeStyle(3, 0xc37e4d); this.add.circle(263, 376, 19, 0xf5c95f); this.add.circle(257, 371, 4, 0xffe59b); this.add.line(289, 354, 300, 340, 0xe6d5b1, 3); if (interactive) this.glow(265, 500, 'golden soup', 'soup'); }
     if (id === 'spark') { this.add.circle(68, 391, 18, 0xffe67a, .22); this.add.text(68, 372, '✦', { fontSize: '29px', color: '#fff1a7' }).setOrigin(.5); if (interactive) this.glow(68, 435, 'First Spark', 'spark'); }
   }
-  private drawMemory() { this.base('A Memory Returns', 0x78b9d3); this.add.rectangle(0, 105, this.scale.width, 300, 0x8ec9de).setOrigin(0); this.add.circle(292, 159, 38, 0xffdd87); this.add.circle(292, 159, 53, 0xffdd87, .14); this.add.ellipse(84, 161, 72, 17, 0xf4fbef, .78); this.add.ellipse(131, 170, 51, 14, 0xf4fbef, .72); this.add.rectangle(0, 500, this.scale.width, 45, 0x416a75).setOrigin(0); this.add.text(this.scale.width / 2, 275, 'Cool breeze in the air…\nA familiar feeling…\nAnd birds beside a river.', { align: 'center', fontFamily: 'Playfair Display', fontSize: '22px', color: '#f9fbdf', lineSpacing: 9 }).setOrigin(.5); this.target = { x: this.scale.width / 2, y: 510, id: 'memory', label: 'remember' }; this.add.text(this.scale.width / 2, 460, 'Tap Interact to follow the memory', { fontSize: '11px', color: '#f8f6d0' }).setOrigin(.5); }
+  private drawMemory() { this.base('A Memory Returns', 0x78b9d3); this.add.rectangle(0, 105, this.scale.width, 300, 0x8ec9de).setOrigin(0); this.add.circle(292, 159, 38, 0xffdd87); this.add.circle(292, 159, 53, 0xffdd87, .14); this.addDriftingClouds(166, 0xf4fbef); this.add.rectangle(0, 500, this.scale.width, 45, 0x416a75).setOrigin(0); this.add.text(this.scale.width / 2, 275, 'Cool breeze in the air…\nA familiar feeling…\nAnd birds beside a river.', { align: 'center', fontFamily: 'Playfair Display', fontSize: '22px', color: '#f9fbdf', lineSpacing: 9 }).setOrigin(.5); this.target = { x: this.scale.width / 2, y: 510, id: 'memory', label: 'remember' }; this.add.text(this.scale.width / 2, 460, 'Tap Interact to follow the memory', { fontSize: '11px', color: '#f8f6d0' }).setOrigin(.5); }
   private startBirdsong() { if (!this.cache.audio.exists('birdsAmbience') || this.birdsAmbience?.isPlaying) return; this.birdsAmbience = this.sound.add('birdsAmbience', { loop: true, volume: .132 }); this.birdsAmbience.play(); }
   private stopBirdsong() { if (this.birdsAmbience) { this.birdsAmbience.stop(); this.birdsAmbience.destroy(); this.birdsAmbience = undefined; } }
   private drawSanctuary(id: 'birds' | 'feather') {
@@ -219,7 +258,7 @@ class AdventureScene extends Phaser.Scene {
     this.add.circle(303, 177, 47, 0xffe09a); this.add.circle(303, 177, 62, 0xffe09a, .13);
     // Distant banks, river and reflections.
     this.add.rectangle(0, 329, this.scale.width, 54, 0x667a69).setOrigin(0); this.add.rectangle(0, 383, this.scale.width, 137, 0x527e93).setOrigin(0);
-    for (let y = 400; y < 505; y += 17) { const start = 135 + (y % 31); this.add.rectangle(start, y, 115, 3, 0xdba27f, .36).setOrigin(0); this.add.rectangle(22, y + 7, 73, 2, 0xaacbd0, .4).setOrigin(0); }
+    for (let y = 400; y < 505; y += 17) { const start = 135 + (y % 31); this.add.rectangle(start, y, 115, 3, 0xdba27f, .36).setOrigin(0); this.add.rectangle(22, y + 7, 73, 2, 0xaacbd0, .4).setOrigin(0); } this.addWaterRipples(387);
     this.add.rectangle(0, 490, this.scale.width, 55, 0x3d654d).setOrigin(0); this.add.rectangle(0, 514, this.scale.width, 31, 0x315847).setOrigin(0);
     // Reeds along the shore.
     for (const x of [18, 31, 44, 92, 105, 337, 349, 364]) { this.add.line(x, 494, x + (x % 3) * 3, 442, 0x294d43, 3); this.add.ellipse(x + 5, 449, 6, 17, 0x79564a); }
@@ -231,7 +270,7 @@ class AdventureScene extends Phaser.Scene {
     if (id === 'feather') { const aura = this.add.circle(247, 381, 28, 0xd9f4db, .18); this.tweens.add({ targets: aura, scale: 1.65, alpha: .48, duration: 900, yoyo: true, repeat: -1 }); const feather = this.add.container(247, 368); feather.add(this.add.line(0, 9, -2, 35, 2, -28, 0xc99b52, 3)); feather.add(this.add.ellipse(0, -4, 26, 51, 0x3b9b83).setAngle(-13)); feather.add(this.add.ellipse(0, -9, 18, 33, 0x236f82).setAngle(-13)); feather.add(this.add.ellipse(0, -13, 10, 18, 0x164f86).setAngle(-13)); feather.add(this.add.circle(0, -14, 5, 0xe7c55f)); feather.add(this.add.circle(0, -14, 2, 0x1d325c)); this.tweens.add({ targets: feather, y: 357, angle: 4, duration: 1050, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' }); }
     this.glow(id === 'birds' ? 182 : 250, id === 'birds' ? 500 : 435, id === 'birds' ? 'follow the birds' : 'Peacock Feather', id);
   }
-  private drawSanctuaryMemory() { this.base('The Peacock Feather', 0xd77768); this.add.rectangle(0, 105, this.scale.width, 115, 0xe98c71).setOrigin(0); this.add.rectangle(0, 220, this.scale.width, 120, 0xf2af7d).setOrigin(0); this.add.rectangle(0, 340, this.scale.width, 180, 0x537f90).setOrigin(0); this.add.circle(286, 251, 42, 0xffcb73); this.add.rectangle(0, 285, this.scale.width, 55, 0x5b776d).setOrigin(0); for (let y = 357; y < 500; y += 17) { const width = 26 + (y - 357) * .7; this.add.rectangle(286 - width / 2, y, width, 4, 0xffc56f, .68).setOrigin(0); } this.add.circle(49, 323, 38, 0x3d6657); this.add.circle(351, 329, 46, 0x3d6657); this.add.text(130, 191, '⌁   ⌁   ⌁', { fontSize: '22px', color: '#4b4052' }); this.add.text(this.scale.width / 2, 165, 'Sunset on the river…\nBirdsong…\nAnd someone beside her.', { align: 'center', fontFamily: 'Playfair Display', fontSize: '22px', color: '#fff8d8', stroke: '#8a514b', strokeThickness: 2, lineSpacing: 9 }).setOrigin(.5); this.target = { x: this.scale.width / 2, y: 510, id: 'sanctuary-memory', label: 'remember' }; this.add.text(this.scale.width / 2, 460, 'Tap Interact to follow the memory', { fontSize: '11px', color: '#fff2bd' }).setOrigin(.5); }
+  private drawSanctuaryMemory() { this.base('The Peacock Feather', 0xd77768); this.add.rectangle(0, 105, this.scale.width, 115, 0xe98c71).setOrigin(0); this.add.rectangle(0, 220, this.scale.width, 120, 0xf2af7d).setOrigin(0); this.add.rectangle(0, 340, this.scale.width, 180, 0x537f90).setOrigin(0); this.add.circle(286, 251, 42, 0xffcb73); this.add.rectangle(0, 285, this.scale.width, 55, 0x5b776d).setOrigin(0); for (let y = 357; y < 500; y += 17) { const width = 26 + (y - 357) * .7; this.add.rectangle(286 - width / 2, y, width, 4, 0xffc56f, .68).setOrigin(0); } this.addWaterRipples(355, 0xffc56f); this.add.circle(49, 323, 38, 0x3d6657); this.add.circle(351, 329, 46, 0x3d6657); this.add.text(130, 191, '⌁   ⌁   ⌁', { fontSize: '22px', color: '#4b4052' }); this.add.text(this.scale.width / 2, 165, 'Sunset on the river…\nBirdsong…\nAnd someone beside her.', { align: 'center', fontFamily: 'Playfair Display', fontSize: '22px', color: '#fff8d8', stroke: '#8a514b', strokeThickness: 2, lineSpacing: 9 }).setOrigin(.5); this.target = { x: this.scale.width / 2, y: 510, id: 'sanctuary-memory', label: 'remember' }; this.add.text(this.scale.width / 2, 460, 'Tap Interact to follow the memory', { fontSize: '11px', color: '#fff2bd' }).setOrigin(.5); }
   private drawPind(id: 'door' | 'chaas' | 'photo') {
     if (id === 'door') {
       this.base('Pind Baluchi', 0x5a3546);
@@ -299,14 +338,14 @@ class AdventureScene extends Phaser.Scene {
     this.time.delayedCall(700, () => this.controller.showMessage('A peaceful night', 'Sammy waves the mosquitoes away with a laugh. The buzzing fades, leaving only the quiet park and moonlight.', () => this.controller.advance('mosquitoes-cleared')));
   }
   private drawPark(id: 'path' | 'mosquitoes' | 'moon') {
-    this.base('Machardutam Park', 0x1b2a4b); this.add.circle(294, 135, 42, 0xfff4c2); this.add.circle(294, 135, 59, 0xfff4c2, .1); this.add.rectangle(0, 460, this.scale.width, 85, 0x294a49).setOrigin(0); this.add.circle(55, 325, 65, 0x24463e); this.add.circle(340, 350, 72, 0x24463e); this.add.text(100, 185, '✦     ·    ✦   ·', { fontSize: '17px', color: '#ffefb2' });
+    this.base('Machardutam Park', 0x1b2a4b); this.add.circle(294, 135, 42, 0xfff4c2); this.add.circle(294, 135, 59, 0xfff4c2, .1); this.add.rectangle(0, 460, this.scale.width, 85, 0x294a49).setOrigin(0); this.add.circle(55, 325, 65, 0x24463e); this.add.circle(340, 350, 72, 0x24463e); this.addFallingLeaves(); this.add.text(100, 185, '✦     ·    ✦   ·', { fontSize: '17px', color: '#ffefb2' });
     if (id === 'mosquitoes') { const positions = [[174, 334], [204, 318], [231, 346], [254, 327], [215, 365]]; this.mosquitoSwarm = positions.map(([x, y], index) => { const mosquito = this.add.text(x, y, '⌁', { fontSize: '27px', color: '#d6aa7a' }).setOrigin(.5); this.tweens.add({ targets: mosquito, x: x + (index % 2 ? 10 : -10), y: y + (index % 2 ? -9 : 9), duration: 330 + index * 55, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' }); return mosquito; }); this.startMosquitoBuzz(); }
     if (id === 'moon') { for (let i = 0; i < 5; i++) { const stone = this.add.ellipse(158 + i * 31, 465 - i * 16, 28 - i * 3, 9 - i, 0x91a8b3, .75); stone.setAngle(-8 + i * 5); } const aura = this.add.circle(285, 258, 42, 0xd8eff5, .13); this.tweens.add({ targets: aura, scale: 1.75, alpha: .45, duration: 900, yoyo: true, repeat: -1 }); const shard = this.add.graphics(); shard.fillStyle(0xd8f7ff).fillPoints([{ x: 285, y: 221 }, { x: 302, y: 253 }, { x: 285, y: 294 }, { x: 268, y: 253 }], true); shard.lineStyle(2, 0xffffff, .85).strokePoints([{ x: 285, y: 221 }, { x: 302, y: 253 }, { x: 285, y: 294 }, { x: 268, y: 253 }], true); this.tweens.add({ targets: shard, y: -9, alpha: .7, duration: 850, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' }); for (const [x, y] of [[250, 235], [320, 243], [262, 283], [313, 292]]) { const star = this.add.text(x, y, '✦', { fontSize: '14px', color: '#f7f4c2' }); this.tweens.add({ targets: star, alpha: .25, duration: 600, yoyo: true, repeat: -1, delay: x % 120 }); } }
     this.glow(id === 'path' ? 300 : id === 'mosquitoes' ? 100 : 285, 500, id === 'path' ? 'walk into park' : id === 'mosquitoes' ? 'shoo mosquitoes' : 'follow moonlight', id === 'path' ? 'parkPath' : id === 'moon' ? 'moon' : 'mosquitoes');
   }
   private drawFinalMemory() { this.base('The Final Memory', 0x26335f); this.add.circle(285, 145, 44, 0xfff0b2); this.add.circle(285, 145, 61, 0xfff0b2, .1); for (const [x, y] of [[54, 185], [102, 228], [338, 211], [350, 286], [71, 334]]) this.add.text(x, y, '✦', { fontSize: '13px', color: '#f6ecc1' }); this.add.triangle(85, 500, 150, 500, 238, 325, 207, 325, 0x76869c, .45).setOrigin(0); this.add.text(this.scale.width / 2, 270, 'Of course.\nI’ve been trying to find you.\n\nThe moon reveals a path to the castle.', { align: 'center', fontFamily: 'Playfair Display', fontSize: '22px', color: '#fff7d7', lineSpacing: 10 }).setOrigin(.5); this.target = { x: this.scale.width / 2, y: 510, id: 'final-memory', label: 'remember' }; this.add.text(this.scale.width / 2, 460, 'Tap Interact to follow the moonlit path', { fontSize: '11px', color: '#fff2bd' }).setOrigin(.5); }
   private drawCastle() {
-    this.base('The Castle Garden', 0x202449); this.add.circle(285, 125, 50, 0xfff2ba); this.add.circle(285, 125, 70, 0xfff2ba, .08); this.add.rectangle(0, 408, this.scale.width, 137, 0x294b4b).setOrigin(0);
+    this.base('The Castle Garden', 0x202449); this.add.circle(285, 125, 50, 0xfff2ba); this.add.circle(285, 125, 70, 0xfff2ba, .08); this.add.rectangle(0, 408, this.scale.width, 137, 0x294b4b).setOrigin(0); this.addFallingLeaves();
     // Castle silhouette: central keep, two turrets, roof lines and lit windows.
     this.add.rectangle(86, 263, 220, 159, 0x4d486a).setOrigin(0); this.add.rectangle(115, 202, 51, 220, 0x565176).setOrigin(0); this.add.rectangle(225, 202, 51, 220, 0x565176).setOrigin(0); this.add.triangle(108, 202, 173, 202, 141, 164, 0x6f526f).setOrigin(0); this.add.triangle(218, 202, 283, 202, 251, 164, 0x6f526f).setOrigin(0);
     for (const [x, y] of [[132, 250], [240, 250], [180, 306], [214, 306]]) { this.add.rectangle(x, y, 13, 22, 0xffd98a).setOrigin(0); this.add.rectangle(x + 5, y, 2, 22, 0x95647a).setOrigin(0); }

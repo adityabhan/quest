@@ -16,6 +16,7 @@ button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-c
 #hud button { pointer-events: auto; position: absolute; border: 1px solid #f5d999a6; background: #29234dce; border-radius: 999px; padding: 9px 12px; font-size: 11px; }
 #journal-button { left: 15px; top: max(15px, env(safe-area-inset-top)); }
 #pause-button { right: 15px; top: max(15px, env(safe-area-inset-top)); width: 37px; }
+.game-version { margin: 18px 0 0; color: #c4b7ca; font-size: 11px; letter-spacing: .08em; }
 #objective { position: absolute; left: 50%; transform: translateX(-50%); bottom: 108px; width: min(92vw, 490px); margin: 0; padding: 10px 14px; text-align: center; border-radius: 12px; font-size: 11px; line-height: 1.45; background: #17142ccc; border: 1px solid #fff0c477; text-shadow: 1px 1px #17142c; }
 #touch-controls { position: absolute; display: flex; align-items: end; gap: 8px; left: 18px; right: 18px; bottom: max(16px, env(safe-area-inset-bottom)); pointer-events: none; }
 #touch-controls button { pointer-events: auto; border: 1px solid #fff5ce70; background: #332857df; border-radius: 14px; min-height: 52px; min-width: 52px; font-size: 31px; touch-action: none; }
